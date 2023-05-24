@@ -4,5 +4,3 @@ sqlalchemy
 pymysql
 python-dotenv
 flask_session
-werkzeug.security
-functools
