@@ -1,6 +1,6 @@
+flask_session
 Flask
 gunicorn
 sqlalchemy
 pymysql
 python-dotenv
-flask_session
