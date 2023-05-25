@@ -11,7 +11,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 #-------------
-#LOGIN-REQUIRED
+#INDEX
 @app.route("/")
 @login_required
 def index():

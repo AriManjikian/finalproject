@@ -1,0 +1,12 @@
+body{
+    overflow-x: hidden;
+}
+.container{
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    gap: 1rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-left: 20%;
+}
