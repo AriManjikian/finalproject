@@ -4,4 +4,3 @@ gunicorn
 sqlalchemy
 pymysql
 python-dotenv
-functools
