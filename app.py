@@ -72,7 +72,8 @@ def signup():
             print("id")
             print(session["user_id"])
             return redirect("/")
-        return "post"
+        else:
+            return("username already in use")
     else:
         return render_template("signup.html")
 
