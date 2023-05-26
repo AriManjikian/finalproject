@@ -1,13 +1,19 @@
-from flask import Flask, redirect, render_template, request, session
+from flask import Flask, redirect, render_template, request, session, url_for, abort
 from sqlalchemy import text
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from database import login_required, get_user, insert_user
+import stripe
 
 app = Flask(__name__)
 
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
+app.config['STRIPE_PUBLIC_KEY'] = 'pk_test_51NBrykBg5en1o2hXCnljwhfUO25fiWK8hTAPhWc0UzqROBnF6owGkHTSMEnCLp9gQqMYVAQJHg8ysFNsjv0W2QgC00tcBediuj'
+app.config['STRIPE_SECRET_KEY'] = 'sk_test_51NBrykBg5en1o2hXTSap4PEk3WDEsHC4znBpHeLQG129heMlKFPnYLTC7lYRyAmH6ThewEspDn28cYlTpKYUbCjB00yieXrjMW'
+
+stripe.api_key = app.config['STRIPE_SECRET_KEY']
+
 Session(app)
 
 #-------------
@@ -88,5 +94,35 @@ def logout():
 
     # Redirect user to login form
     return redirect("/")
+
+
+
+
+@app.route("/stripe_pay")
+def stripe_pay():
+    items = []
+
+    session = stripe.checkout.Session.create(
+        payment_method_types=['card'],
+        line_items=[{
+            'price': 'price_1NC0igBg5en1o2hXV4Npyliy',
+            'quantity': 1,
+        }],
+        mode='payment',
+        success_url=url_for('thanks', _external=True) + '?session_id={CHECKOUT_SESSION_ID}',
+        cancel_url=url_for('index', _external=True),
+    )
+    return {
+        'checkout_session_id': session['id'], 
+        'checkout_public_key': app.config['STRIPE_PUBLIC_KEY']
+    }
+
+
+@app.route('/thanks')
+def thanks():
+    return render_template('thanks.html')
+
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
