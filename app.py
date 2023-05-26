@@ -76,11 +76,17 @@ def signup():
             return("username already in use")
     else:
         return render_template("signup.html")
+    
+#--------------
+#LOGOUT
+@app.route("/logout")
+def logout():
+    """Log user out"""
 
+    # Forget any user_id
+    session.clear()
 
-
-
-
-
+    # Redirect user to login form
+    return redirect("/")
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)

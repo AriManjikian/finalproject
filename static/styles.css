@@ -20,17 +20,23 @@ body{
 }
 .form-large{
     height: 90vh;
-    width: 40vw;
+    width: minmax(40vh,40vw);
+    scale: 0.9;
     padding: 3.5rem;
+    padding-right: 7rem;
+    padding-left: 7rem;
     border: 1px solid rgb(150, 150, 150);
     border-radius: 2rem;
     box-shadow: 0px 4px 10px black;
 }
 .form{
     height: 60vh;
-    width: 30vw;
+    width: minmax(40vh,30vw);
     padding: 3.5rem;
     border: 1px solid rgb(150, 150, 150);
     border-radius: 2rem;
     box-shadow: 0px 4px 10px black;
+}
+.search{
+    margin-right: 20px;
 }
