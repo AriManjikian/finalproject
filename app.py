@@ -2,7 +2,7 @@ from flask import Flask, redirect, render_template, request, session, url_for, a
 from sqlalchemy import text
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
-from database import login_required, get_user, insert_user, get_items
+from database import login_required, get_user, insert_user, get_items, get_favorites, upload_favorite
 import stripe
 
 app = Flask(__name__)
@@ -22,6 +22,17 @@ Session(app)
 @login_required
 def index():
    items=get_items()
+   favorites = get_favorites()
+   if not favorites:
+       for item in items:
+           item['class'] = "bi bi-heart fa-9x"
+       return render_template("home.html", items=items)
+   for item in items:
+       for favorite in favorites:
+           if item["item_id"] == favorite:
+               item['class'] = "bi bi-heart-fill text-danger fa-9x"
+               break
+           item['class'] = "bi bi-heart fa-9x"
    return render_template("home.html", items=items)
 
 
@@ -96,6 +107,9 @@ def logout():
     # Redirect user to login form
     return redirect("/")
 
+
+#---------------------------
+#STRIPE PAYMENT CHECKOUT
 @app.route("/stripe_pay")
 def stripe_pay():
     items = []
@@ -116,11 +130,23 @@ def stripe_pay():
     }
 
 
+#------------------------
+#THANK YOU PAGE
 @app.route('/thanks')
 def thanks():
     return render_template('thanks.html')
 
 
+#--------------------------
+#FAVORITES
+@app.route("/favorites/<id>", methods = ["GET", "POST"])
+def favorites(id):
+    if request.method == "POST":
+        upload_favorite(id)
+        return redirect("/")
+    else:
+        
+        return render_template("favorite.html")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)

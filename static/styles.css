@@ -50,3 +50,7 @@ body{
 .search{
     margin-right: 20px;
 }
+.invis-btn{
+    border: none;
+    background: transparent;
+}

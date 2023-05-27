@@ -7,13 +7,14 @@
         <img src="/static/{{item.photo}}" class="card-img-top" alt="...">
         <div class="card-body">
           <h5 class="card-title">{{item.item_name}}</h5>
+          <p class="card-title">{{item.price}}</p>
           <p class="card-text">{{item.item_description}}</p>
           <div class="buttons">
             <form action="/added_to_cart" method="post">
               <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" name="ID FROM JINJA" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">Add To Cart</button>
             </form>
-            <form action="/favorite" method="post">
-              <i class="bi bi-heart fa-9x" name="ID FROM JINJA" id="heart"></i>
+            <form action="/favorites/{{item.item_id}}" method="post">
+              <button class="invis-btn"><i class="{{item.class}}" id="heart"></i></button>
             </form>
           </div>
         </div>

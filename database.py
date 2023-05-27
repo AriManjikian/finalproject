@@ -17,7 +17,7 @@ engine = create_engine(
 
 def get_user(username):
     with engine.connect() as conn:
-        result = conn.execute(text(f"select * from user where username = '{username}'"))
+        result = conn.execute(text(f"select * from users where username = '{username}'"))
         column_names = result.keys()
 
         result_dicts = []
@@ -30,7 +30,7 @@ def get_user(username):
     
 def insert_user(username, email, password_hash):
     with engine.connect() as conn:
-        conn.execute(text(f"INSERT into user (username, email, password_hash) values ('{username}', '{email}', '{password_hash}')"))
+        conn.execute(text(f"INSERT into users (username, email, password_hash) values ('{username}', '{email}', '{password_hash}')"))
 
 def get_items():
     with engine.connect() as conn:
@@ -45,9 +45,30 @@ def get_items():
         final_result = []
         for dictionary in result_dicts:
             final_result.append(dictionary)
-
-        print(final_result)
         return final_result
+
+
+def get_cart_items():
+    return
+
+
+def get_favorites():
+    with engine.connect() as conn:
+        result = conn.execute(text(f"SELECT item_id from favorite where user_id = {session['user_id']}"))
+        favorites_id = []
+        for favlist in result.all():
+            for favorite in favlist:
+                favorites_id.append(favorite)
+        return favorites_id
+
+def upload_favorite(id):
+    with engine.connect() as conn:
+        result = conn.execute(text(f"Select * from favorite where user_id = {session['user_id']} and item_id = {id}"))
+        if not result.all():
+            conn.execute(text(f"INSERT INTO favorite (user_id, item_id) VALUES ({session['user_id']}, {id})"))
+        else:
+            conn.execute(text(f"Delete from favorite where user_id = {session['user_id']} and item_id = {id}"))
+        return
 
 def login_required(f):
     """
