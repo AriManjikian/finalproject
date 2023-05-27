@@ -1,4 +1,5 @@
 const buttons = document.querySelectorAll('#checkout');
+const hearts = document.querySelectorAll("#heart")
 
 buttons.forEach(button =>{
     button.addEventListener('click', event => {
@@ -7,15 +8,20 @@ buttons.forEach(button =>{
         .then((data) => {
             var stripe = Stripe(data.checkout_public_key);
             stripe.redirectToCheckout({
-                // Make the id field from the Checkout Session creation API response
-                // available to this file, so you can provide it as parameter here
-                // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
                 sessionId: data.checkout_session_id
             }).then(function (result) {
-                // If `redirectToCheckout` fails due to a browser or network
-                // error, display the localized error message to your customer
-                // using `result.error.message`.
             });
         })
     });
+})
+
+hearts.forEach(heart =>{
+    heart.addEventListener('click', (e) => {
+        if(heart.classList.contains("text-danger")){
+            heart.classList = "bi bi-heart"
+        }
+        else{
+            heart.classList = "bi bi-heart-fill text-danger"
+        }
+    })
 })

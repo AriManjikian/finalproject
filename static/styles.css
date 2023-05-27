@@ -10,7 +10,17 @@ body{
     flex-wrap: wrap;
     margin-left: 20%;
 }
-
+.card{
+    height: max-content;
+}
+.buttons{
+    display: flex;
+    font-size: 1.5rem;
+    justify-content: space-between;
+}
+#heart:hover{
+    opacity: 75%;
+}
 .form-container{
     display: flex;
     height: 100vh;

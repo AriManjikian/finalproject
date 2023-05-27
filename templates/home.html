@@ -2,77 +2,22 @@
 
 {% block cards %}
 <div class="container">
-    <div class="card" style="width: 15rem;">
-    <img src="/static/img.jpg" class="card-img-top" alt="...">
-    <div class="card-body">
-      <h5 class="card-title">Card title</h5>
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-      <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">Add To Cart</button>
+      {% for item in items %}
+      <div class="card" style="width: 15rem;">
+        <img src="/static/{{item.photo}}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">{{item.item_name}}</h5>
+          <p class="card-text">{{item.item_description}}</p>
+          <div class="buttons">
+            <form action="/added_to_cart" method="post">
+              <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" name="ID FROM JINJA" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">Add To Cart</button>
+            </form>
+            <form action="/favorite" method="post">
+              <i class="bi bi-heart fa-9x" name="ID FROM JINJA" id="heart"></i>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
     </div>
-</div>
-<div class="card" style="width: 15rem;">
-    <img src="/static/img.jpg" class="card-img-top" alt="...">
-    <div class="card-body">
-      <h5 class="card-title">Card title</h5>
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-      <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">Add To Cart</button>
-    </div>
-</div>
-<div class="card" style="width: 15rem;">
-    <img src="/static/img.jpg" class="card-img-top" alt="...">
-    <div class="card-body">
-      <h5 class="card-title">Card title</h5>
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-      <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">Add To Cart</button>
-    </div>
-</div>
-<div class="card" style="width: 15rem;">
-    <img src="/static/img.jpg" class="card-img-top" alt="...">
-    <div class="card-body">
-      <h5 class="card-title">Card title</h5>
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-      <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">Add To Cart</button>
-    </div>
-</div>
-<div class="card" style="width: 15rem;">
-    <img src="/static/img.jpg" class="card-img-top" alt="...">
-    <div class="card-body">
-      <h5 class="card-title">Card title</h5>
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-      <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">Add To Cart</button>
-    </div>
-</div>
-<div class="card" style="width: 15rem;">
-    <img src="/static/img.jpg" class="card-img-top" alt="...">
-    <div class="card-body">
-      <h5 class="card-title">Card title</h5>
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-      <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">Add To Cart</button>
-    </div>
-</div>
-<div class="card" style="width: 15rem;">
-    <img src="/static/img.jpg" class="card-img-top" alt="...">
-    <div class="card-body">
-      <h5 class="card-title">Card title</h5>
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-      <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">Add To Cart</button>
-    </div>
-</div>
-<div class="card" style="width: 15rem;">
-    <img src="/static/img.jpg" class="card-img-top" alt="...">
-    <div class="card-body">
-      <h5 class="card-title">Card title</h5>
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-      <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">Add To Cart</button>
-    </div>
-</div>
-<div class="card" style="width: 15rem;">
-    <img src="/static/img.jpg" class="card-img-top" alt="...">
-    <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-      <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">Add To Cart</button>
-    </div>
-</div>
-</div>
 {% endblock %}

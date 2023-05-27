@@ -32,6 +32,22 @@ def insert_user(username, email, password_hash):
     with engine.connect() as conn:
         conn.execute(text(f"INSERT into user (username, email, password_hash) values ('{username}', '{email}', '{password_hash}')"))
 
+def get_items():
+    with engine.connect() as conn:
+        result = conn.execute(text("SELECT * from item"))
+        column_names = result.keys()
+
+        result_dicts = []
+
+        for row in result.all():
+            result_dicts.append(dict(zip(column_names, row)))
+
+        final_result = []
+        for dictionary in result_dicts:
+            final_result.append(dictionary)
+
+        print(final_result)
+        return final_result
 
 def login_required(f):
     """

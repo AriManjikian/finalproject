@@ -2,7 +2,7 @@ from flask import Flask, redirect, render_template, request, session, url_for, a
 from sqlalchemy import text
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
-from database import login_required, get_user, insert_user
+from database import login_required, get_user, insert_user, get_items
 import stripe
 
 app = Flask(__name__)
@@ -21,7 +21,8 @@ Session(app)
 @app.route("/")
 @login_required
 def index():
-   return render_template("home.html")
+   items=get_items()
+   return render_template("home.html", items=items)
 
 
 #----------------
@@ -94,9 +95,6 @@ def logout():
 
     # Redirect user to login form
     return redirect("/")
-
-
-
 
 @app.route("/stripe_pay")
 def stripe_pay():
