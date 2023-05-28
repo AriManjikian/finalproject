@@ -14,7 +14,7 @@
   <nav class="navbar bg-light sticky-top">
       <div class="container-fluid">
           <div>    
-              <a class="navbar-brand">Navbar</a>
+              <a class="navbar-brand" href="/">{% for user in username %}{{user}}{% endfor%}</a>
               <a class="navbar-brand" href="/logout">Logout</a>
               <a class="navbar-brand" href="/favorites">Fav</a>
               <a class="navbar-brand" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">Cart</a>
@@ -30,14 +30,32 @@
     </nav>
 
     
-    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas offcanvas-start {{show}}" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasExampleLabel">Shopping Cart</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
       <div class="offcanvas-body">
-        <!-- Cart items jinja -->  
-        <!-- Total Amount Here-->
+        {% for card in cart %}
+        <div class="card mb-3" style="max-width: 540px;">
+          <div class="row g-0 cart-btns">
+            <div class="col-md-4">
+              <img src="/static/img.jpg" class="img-fluid rounded-start" alt="...">
+            </div>
+            <div class="col-md-4">
+              <div class="card-body">
+                <h5 class="card-title">{{card.item_name}}</h5>
+                <p>{{card.price}}</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <form action="/remove/{{card.item_id}}" method="post">
+                <button type="submit">Remove</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        {%endfor%}
           <button class="btn btn-secondary" id="checkout" type="button">
             Checkout
           </button>      

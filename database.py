@@ -15,6 +15,11 @@ engine = create_engine(
     }
     )
 
+def get_username(id):
+    with engine.connect() as conn:
+        return(conn.execute(text(f"Select username from users where id = {id}")).all()[0])
+
+
 def get_user(username):
     with engine.connect() as conn:
         result = conn.execute(text(f"select * from users where username = '{username}'"))
@@ -24,8 +29,6 @@ def get_user(username):
 
         for row in result.all():
             result_dicts.append(dict(zip(column_names, row)))
-
-        print(result_dicts)
         return(result_dicts)
     
 def insert_user(username, email, password_hash):
@@ -49,8 +52,18 @@ def get_items():
 
 
 def get_cart_items():
-    return
+    with engine.connect() as conn:
+        result = conn.execute(text(f"Select * from cart_item where user_id = {session['user_id']}"))
+        column_names = result.keys()
 
+        result_dicts = []
+
+        for row in result.all():
+            result_dicts.append(dict(zip(column_names, row)))
+        final_result = []
+        for dictionary in result_dicts:
+            final_result.append(dictionary)
+        return final_result
 
 def get_favorites():
     with engine.connect() as conn:
@@ -70,6 +83,25 @@ def upload_favorite(id):
             conn.execute(text(f"Delete from favorite where user_id = {session['user_id']} and item_id = {id}"))
         return
 
+def upload_cart(id):
+    with engine.connect() as conn:
+        result = conn.execute(text(f"SELECT * from item where item_id = {id}"))
+        column_names = result.keys()
+
+        result_dicts = []
+
+        for row in result.all():
+            result_dicts.append(dict(zip(column_names, row)))
+        if not conn.execute(text(f"SELECT * from cart_item where user_id = {session['user_id']} and item_id={id}")).all():
+            conn.execute(text(f"INSERT INTO cart_item (user_id, item_id, price, price_id) VALUES ({session['user_id']}, {id}, '{result_dicts[0]['price']}', '{result_dicts[0]['price_id']}')"))
+        else:
+            return
+
+def remove_item(id):
+    with engine.connect() as conn:
+        conn.execute(text(f"DELETE from cart_item where user_id = {session['user_id']} and item_id = {id}"))
+        return
+    
 def login_required(f):
     """
     Decorate routes to require login.

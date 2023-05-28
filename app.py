@@ -2,7 +2,8 @@ from flask import Flask, redirect, render_template, request, session, url_for, a
 from sqlalchemy import text
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
-from database import login_required, get_user, insert_user, get_items, get_favorites, upload_favorite
+from database import login_required, get_user, insert_user, get_items, get_favorites, upload_favorite, upload_cart, get_cart_items, get_username, remove_item
+
 import stripe
 
 app = Flask(__name__)
@@ -15,12 +16,13 @@ app.config['STRIPE_SECRET_KEY'] = 'sk_test_51NBrykBg5en1o2hXTSap4PEk3WDEsHC4znBp
 stripe.api_key = app.config['STRIPE_SECRET_KEY']
 
 Session(app)
-
+count = 0
 #-------------
 #INDEX
 @app.route("/")
 @login_required
 def index():
+   #favorite
    items=get_items()
    favorites = get_favorites()
    if not favorites:
@@ -33,7 +35,18 @@ def index():
                item['class'] = "bi bi-heart-fill text-danger fa-9x"
                break
            item['class'] = "bi bi-heart fa-9x"
-   return render_template("home.html", items=items)
+   #cart
+   cart_cards = []
+   cart_items = get_cart_items()
+   items = get_items()
+   for item in items:
+       for cart_item in cart_items:
+           if cart_item["price"] == item["price"]:
+               cart_cards.append(item)
+    #username
+   username = get_username(session["user_id"])
+    
+   return render_template("home.html", items=items, cart_cards=cart_cards, username=username, cart=cart_cards)
 
 
 #----------------
@@ -139,14 +152,27 @@ def thanks():
 
 #--------------------------
 #FAVORITES
-@app.route("/favorites/<id>", methods = ["GET", "POST"])
+@app.route("/favorites/<id>", methods = ["POST"])
 def favorites(id):
-    if request.method == "POST":
-        upload_favorite(id)
-        return redirect("/")
-    else:
-        
-        return render_template("favorite.html")
+    upload_favorite(id)
+    return redirect("/")
+
+@app.route("/favorites")
+def navbar_fav():
+    username=get_username(session['user_id'])
+    return render_template("favorite.html", username=username)
+
+#--------------------
+#CART ITEMS
+@app.route("/cart/<id>", methods = ["POST"])
+def cart(id):
+    upload_cart(id)
+    return redirect("/")
+
+@app.route("/remove/<id>", methods = ["POST"])
+def remove(id):
+    remove_item(id)
+    return redirect("/")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
