@@ -11,6 +11,8 @@
   <title>Document</title>
 </head>
 <body>
+  {%block favorite %}
+  {% endblock %}
   <nav class="navbar bg-light sticky-top">
       <div class="container-fluid">
           <div>    
@@ -40,7 +42,7 @@
         <div class="card mb-3" style="max-width: 540px;">
           <div class="row g-0 cart-btns">
             <div class="col-md-4">
-              <img src="/static/img.jpg" class="img-fluid rounded-start" alt="...">
+              <img src="/static/{{card.photo}}" class="img-fluid rounded-start" alt="...">
             </div>
             <div class="col-md-4">
               <div class="card-body">
@@ -56,6 +58,7 @@
           </div>
         </div>
         {%endfor%}
+        <h4>{{total}}</h4>
           <button class="btn btn-secondary" id="checkout" type="button">
             Checkout
           </button>      
@@ -64,6 +67,8 @@
   {% block cards %}
   
   {% endblock %}
+  {%block favorite_items %}
+  {%endblock%}
 </body>
 <footer>
 <script src="https://js.stripe.com/v3/"></script>

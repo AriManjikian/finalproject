@@ -2,7 +2,7 @@ from flask import Flask, redirect, render_template, request, session, url_for, a
 from sqlalchemy import text
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
-from database import login_required, get_user, insert_user, get_items, get_favorites, upload_favorite, upload_cart, get_cart_items, get_username, remove_item
+from database import login_required, get_user, insert_user, get_items, get_favorites, upload_favorite, upload_cart, get_cart_items, get_username, remove_item, get_id
 
 import stripe
 
@@ -28,7 +28,6 @@ def index():
    if not favorites:
        for item in items:
            item['class'] = "bi bi-heart fa-9x"
-       return render_template("home.html", items=items)
    for item in items:
        for favorite in favorites:
            if item["item_id"] == favorite:
@@ -37,16 +36,19 @@ def index():
            item['class'] = "bi bi-heart fa-9x"
    #cart
    cart_cards = []
+   total = 0
    cart_items = get_cart_items()
-   items = get_items()
-   for item in items:
+   cartItemList = get_items()
+   for item in cartItemList:
        for cart_item in cart_items:
            if cart_item["price"] == item["price"]:
                cart_cards.append(item)
+               total += float(item["price"][1:])
+   total = '$' + str(total)
     #username
    username = get_username(session["user_id"])
-    
-   return render_template("home.html", items=items, cart_cards=cart_cards, username=username, cart=cart_cards)
+   print(f'USERNAME---------------- {username}')
+   return render_template("home.html", items=items,username=username, cart=cart_cards, total=total)
 
 
 #----------------
@@ -99,7 +101,7 @@ def signup():
         rows = get_user(username)
         if not rows and password == confirm:
             insert_user(username, email, generate_password_hash(password))
-            session["user_id"] = id
+            session["user_id"] = get_id(username)
             print("id")
             print(session["user_id"])
             return redirect("/")
@@ -125,14 +127,16 @@ def logout():
 #STRIPE PAYMENT CHECKOUT
 @app.route("/stripe_pay")
 def stripe_pay():
-    items = []
-
+    cart_items = get_cart_items()
+    stripe_items = []
+    for cart_item in cart_items:
+        stripe_items.append({
+            "price": cart_item['price_id'],
+            "quantity": 1
+        })
     session = stripe.checkout.Session.create(
         payment_method_types=['card'],
-        line_items=[{
-            'price': 'price_1NC0igBg5en1o2hXV4Npyliy',
-            'quantity': 1,
-        }],
+        line_items=stripe_items,
         mode='payment',
         success_url=url_for('thanks', _external=True) + '?session_id={CHECKOUT_SESSION_ID}',
         cancel_url=url_for('index', _external=True),
@@ -159,8 +163,25 @@ def favorites(id):
 
 @app.route("/favorites")
 def navbar_fav():
-    username=get_username(session['user_id'])
-    return render_template("favorite.html", username=username)
+    favorites = get_favorites()
+    items=get_items()
+    favorite_cards = []
+    for item in items:
+       for favorite in favorites:
+           if item["item_id"] == favorite:
+               favorite_cards.append(item)
+    cart_cards = []
+    total = 0
+    cart_items = get_cart_items()
+    cartItemList = get_items()
+    for item in cartItemList:
+       for cart_item in cart_items:
+           if cart_item["price"] == item["price"]:
+               cart_cards.append(item)
+               total += float(item["price"][1:])
+    total = '$' + str(total)
+    username = get_username(session["user_id"])
+    return render_template("favorite.html", username=username, cart=cart_cards, total=total, favorites=favorite_cards)
 
 #--------------------
 #CART ITEMS

@@ -101,7 +101,13 @@ def remove_item(id):
     with engine.connect() as conn:
         conn.execute(text(f"DELETE from cart_item where user_id = {session['user_id']} and item_id = {id}"))
         return
-    
+
+def get_id(username):
+    with engine.connect() as conn:
+        id = conn.execute(text(f"Select id from users where username = '{username}'")).all()
+        for x in id:
+            return int(x[0])
+
 def login_required(f):
     """
     Decorate routes to require login.
