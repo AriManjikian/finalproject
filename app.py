@@ -2,7 +2,7 @@ from flask import Flask, redirect, render_template, request, session, url_for, a
 from sqlalchemy import text
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
-from database import login_required, get_user, insert_user, get_items, get_favorites, upload_favorite, upload_cart, get_cart_items, get_username, remove_item, get_id
+from database import login_required, get_user, insert_user, get_items, get_favorites, upload_favorite, upload_cart, get_cart_items, get_username, remove_item, get_id, get_search_items, delete_cart
 
 import stripe
 
@@ -151,9 +151,19 @@ def stripe_pay():
 #THANK YOU PAGE
 @app.route('/thanks')
 def thanks():
-    return render_template('thanks.html')
+    items = get_items()
+    cart_items = get_cart_items()
+    checkout_items= []
+    for cart_item in cart_items:
+        for item in items:
+            print(item["item_id"])
+            print(cart_item["item_id"])
+            if cart_item["item_id"] == item["item_id"]:
+                checkout_items.append(item)
+    print(checkout_items)
+    return render_template('thanks.html', checkout_items=checkout_items)
 
-
+    print(item['item_id'])
 #--------------------------
 #FAVORITES
 @app.route("/favorites/<id>", methods = ["POST"])
@@ -194,6 +204,37 @@ def cart(id):
 def remove(id):
     remove_item(id)
     return redirect("/")
+
+@app.route("/search")
+def search():
+    search = request.args.get("search")
+    items = get_search_items(search)
+    favorites = get_favorites()
+    if not favorites:
+       for item in items:
+           item['class'] = "bi bi-heart fa-9x"
+    for item in items:
+       for favorite in favorites:
+           if item["item_id"] == favorite:
+               item['class'] = "bi bi-heart-fill text-danger fa-9x"
+               break
+           item['class'] = "bi bi-heart fa-9x"
+   #cart
+    cart_cards = []
+    total = 0
+    cart_items = get_cart_items()
+    cartItemList = get_items()
+    for item in cartItemList:
+       for cart_item in cart_items:
+           if cart_item["price"] == item["price"]:
+               cart_cards.append(item)
+               total += float(item["price"][1:])
+    total = '$' + str(total)
+    #username
+    username = get_username(session["user_id"])
+    print(f'USERNAME---------------- {username}')
+    return render_template("home.html", items=items,username=username, cart=cart_cards, total=total)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)

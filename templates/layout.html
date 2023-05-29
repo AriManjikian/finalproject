@@ -17,8 +17,8 @@
       <div class="container-fluid">
           <div>    
               <a class="navbar-brand" href="/">{% for user in username %}{{user}}{% endfor%}</a>
-              <a class="navbar-brand" href="/logout">Logout</a>
-              <a class="navbar-brand" href="/favorites">Fav</a>
+              <a class="navbar-brand" href="/logout">Log Out</a>
+              <a class="navbar-brand" href="/favorites">Favorites</a>
               <a class="navbar-brand" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">Cart</a>
     
           </div>
@@ -52,7 +52,7 @@
             </div>
             <div class="col-md-4">
               <form action="/remove/{{card.item_id}}" method="post">
-                <button type="submit">Remove</button>
+                <button type="submit" class="remove">Remove</button>
               </form>
             </div>
           </div>

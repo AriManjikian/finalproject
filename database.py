@@ -108,6 +108,25 @@ def get_id(username):
         for x in id:
             return int(x[0])
 
+def get_search_items(search):
+    with engine.connect() as conn:
+        result = conn.execute(text(f"SELECT * from item where item_name like '%{search}%'"))
+        column_names = result.keys()
+
+        result_dicts = []
+
+        for row in result.all():
+            result_dicts.append(dict(zip(column_names, row)))
+
+        final_result = []
+        for dictionary in result_dicts:
+            final_result.append(dictionary)
+        return final_result
+    
+def delete_cart():
+    with engine.connect() as conn:
+        conn.execute(text(f"DELETE FROM cart_item where user_id = {session['user_id']}"))
+        return
 def login_required(f):
     """
     Decorate routes to require login.

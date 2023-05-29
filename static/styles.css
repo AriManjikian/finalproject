@@ -62,3 +62,15 @@ body{
     justify-content: center;
     align-items: center;
 }
+.remove{
+    background-color: rgb(255, 75, 75);
+    border: none;
+    border-radius: 15%;
+    color: white;
+}
+.tab-content{
+    text-align: center;
+}
+.return{
+    position: relative;
+}
